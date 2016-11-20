@@ -14,7 +14,9 @@ type ListCache struct {
 	cbfunc    CallbackFunc
 }
 
-func (lc *ListCache) Put(key string, data interface{}) {
+// Put add new item to list, return current list length
+// if not exceeded max length
+func (lc *ListCache) Put(key string, data interface{}) int {
 	var list ListData
 	old, found := lc.cache.Get(key)
 	if found {
@@ -30,9 +32,23 @@ func (lc *ListCache) Put(key string, data interface{}) {
 		}
 
 		lc.cache.Del(key)
+
+		return -1
+
 	} else {
 		lc.cache.Set(key, list)
 	}
+
+	return len(list)
+}
+
+func (lc *ListCache) Get(key string) (ListData, bool) {
+	l, found := lc.cache.Get(key)
+	if found {
+		return l.(ListData), true
+	}
+
+	return nil, false
 }
 
 func NewListCache(d time.Duration, l int, cbfunc CallbackFunc) *ListCache {
