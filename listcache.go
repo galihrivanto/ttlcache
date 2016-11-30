@@ -35,6 +35,10 @@ func (lc *ListCache) Put(key string, data interface{}) {
 	}
 }
 
+func (lc *ListCache) Count() int {
+	return lc.cache.Count()
+}
+
 func NewListCache(d time.Duration, l int, cbfunc CallbackFunc) *ListCache {
 	cache := NewCache(d)
 	cache.expfunc = func(key string, data interface{}) {
